@@ -24,5 +24,7 @@
     <string>13.0</string>
     <key>NSHighResolutionCapable</key>
     <true/>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>«Дальше» подключается напрямую к вашему Kindle для показа его экрана.</string>
 </dict>
 </plist>

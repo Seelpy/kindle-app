@@ -2,7 +2,9 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var store: ReadingStore
+    @StateObject private var screenShare = KindleScreenShareStore()
     @State private var showReleaseConfirmation = false
+    @State private var showScreenShare = false
     @State private var closingNote = "Начни с разговора у окна"
 
     var body: some View {
@@ -11,7 +13,7 @@ struct ContentView: View {
 
             if let book = store.state.book {
                 HStack(spacing: 18) {
-                    MacSurface(book: book, showReleaseConfirmation: $showReleaseConfirmation, closingNote: $closingNote)
+                    MacSurface(book: book, showReleaseConfirmation: $showReleaseConfirmation, showScreenShare: $showScreenShare, closingNote: $closingNote)
                     KindleSurface(book: book, showReleaseConfirmation: $showReleaseConfirmation)
                         .frame(width: 380)
                 }
@@ -26,6 +28,10 @@ struct ContentView: View {
         } message: {
             Text("Прогресс и заметка останутся сохранены. К книге всегда можно вернуться.")
         }
+        .sheet(isPresented: $showScreenShare) {
+            KindleScreenShareView()
+                .environmentObject(screenShare)
+        }
     }
 }
 
@@ -33,6 +39,7 @@ private struct MacSurface: View {
     @EnvironmentObject private var store: ReadingStore
     let book: ActiveBook
     @Binding var showReleaseConfirmation: Bool
+    @Binding var showScreenShare: Bool
     @Binding var closingNote: String
 
     var body: some View {
@@ -44,6 +51,8 @@ private struct MacSurface: View {
                 Spacer()
                 Text("Дальше").font(.system(.title3, design: .serif, weight: .semibold))
                 Spacer()
+                Button("Экран Kindle") { showScreenShare = true }
+                    .buttonStyle(.bordered)
                 Text(Date.now, format: .dateTime.day().month(.wide).year()).font(.caption).foregroundStyle(.secondary)
             }
             .padding(.horizontal, 28)
@@ -59,6 +68,81 @@ private struct MacSurface: View {
         .background(Color(red: 0.98, green: 0.985, blue: 0.995))
         .clipShape(RoundedRectangle(cornerRadius: 18))
         .shadow(color: .black.opacity(0.12), radius: 24, y: 14)
+    }
+}
+
+private struct KindleScreenShareView: View {
+    @EnvironmentObject private var screenShare: KindleScreenShareStore
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(spacing: 18) {
+            HStack {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Экран Kindle Scribe")
+                        .font(.system(size: 28, design: .serif))
+                    Text("Только просмотр · локальная сеть · строгая проверка SSH")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Button("Закрыть") { dismiss() }
+            }
+
+            HStack(spacing: 10) {
+                TextField("IP-адрес Kindle", text: $screenShare.host)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 190)
+                TextField("Порт", text: $screenShare.port)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 76)
+
+                Button(screenShare.isStreaming ? "Остановить" : "Подключить") {
+                    screenShare.connect()
+                }
+                .buttonStyle(.borderedProminent)
+
+                Spacer()
+                Button { screenShare.rotateLeft() } label: { Image(systemName: "rotate.left") }
+                    .accessibilityLabel("Повернуть влево")
+                Button { screenShare.rotateRight() } label: { Image(systemName: "rotate.right") }
+                    .accessibilityLabel("Повернуть вправо")
+            }
+
+            Label(screenShare.status.title, systemImage: screenShare.isStreaming ? "dot.radiowaves.left.and.right" : "lock.shield")
+                .font(.callout)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            ZStack {
+                RoundedRectangle(cornerRadius: 18)
+                    .fill(Color(red: 0.88, green: 0.88, blue: 0.86))
+
+                if let frame = screenShare.frame {
+                    Image(nsImage: frame)
+                        .resizable()
+                        .interpolation(.none)
+                        .scaledToFit()
+                        .rotationEffect(.degrees(Double(screenShare.rotation)))
+                        .padding(20)
+                } else {
+                    VStack(spacing: 12) {
+                        Image(systemName: "rectangle.on.rectangle.slash")
+                            .font(.system(size: 42, weight: .light))
+                        Text("Введите адрес Kindle и подключитесь")
+                            .font(.system(size: 20, design: .serif))
+                        Text("На Kindle должен быть заранее включён SSH в KOReader и добавлен ваш публичный ключ.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: 420)
+                    }
+                }
+            }
+            .frame(minHeight: 570)
+        }
+        .padding(24)
+        .frame(minWidth: 760, minHeight: 760)
+        .onDisappear { screenShare.disconnect() }
     }
 }
 

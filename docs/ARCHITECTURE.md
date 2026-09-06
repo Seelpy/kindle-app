@@ -3,6 +3,7 @@
 ## Компоненты
 
 - `native-macos/` — нативный SwiftUI-клиент и безопасный симулятор Kindle.
+- `KindleScreenShare.swift` — опциональный просмотр framebuffer Scribe по SSH с преобразованием grayscale-кадров средствами macOS.
 - `koreader/dalshe.koplugin/` — минимальный пользовательский плагин KOReader без установки на устройство.
 - `src/` — интерактивный визуальный прототип для быстрой проверки продукта.
 
