@@ -19,7 +19,7 @@ final class KindleScreenShareStore: ObservableObject {
         }
     }
 
-    @Published var host = ""
+    @Published var host = "192.168.0.197"
     @Published var port = "2222"
     @Published private(set) var status: Status = .disconnected
     @Published private(set) var frame: NSImage?
