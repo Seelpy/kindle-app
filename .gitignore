@@ -2,6 +2,8 @@ node_modules/
 dist/
 .build/
 native-macos/build/
+native-macos/.runtime/
+native-macos/.kindle-config/
 .DS_Store
 *.log
 .env
