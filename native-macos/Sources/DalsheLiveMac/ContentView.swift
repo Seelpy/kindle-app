@@ -1,5 +1,13 @@
 import SwiftUI
 
+private enum AppPalette {
+    static let canvas = Color(red: 0.93, green: 0.92, blue: 0.89)
+    static let surface = Color(red: 0.99, green: 0.985, blue: 0.965)
+    static let ink = Color(red: 0.12, green: 0.11, blue: 0.10)
+    static let muted = Color(red: 0.38, green: 0.36, blue: 0.33)
+    static let accent = Color(red: 0.16, green: 0.29, blue: 0.24)
+}
+
 struct ContentView: View {
     @EnvironmentObject private var store: ReadingStore
     @StateObject private var screenShare = KindleScreenShareStore()
@@ -9,19 +17,18 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 0.92, green: 0.93, blue: 0.95).ignoresSafeArea()
+            AppPalette.canvas.ignoresSafeArea()
 
             if let book = store.state.book {
-                HStack(spacing: 18) {
-                    MacSurface(book: book, showReleaseConfirmation: $showReleaseConfirmation, showScreenShare: $showScreenShare, closingNote: $closingNote)
-                    KindleSurface(book: book, showReleaseConfirmation: $showReleaseConfirmation)
-                        .frame(width: 380)
-                }
-                .padding(24)
+                MacSurface(book: book, showReleaseConfirmation: $showReleaseConfirmation, showScreenShare: $showScreenShare, closingNote: $closingNote)
+                    .padding(24)
             } else {
                 EmptyBookView()
             }
         }
+        .foregroundStyle(AppPalette.ink)
+        .tint(AppPalette.accent)
+        .preferredColorScheme(.light)
         .confirmationDialog("Отпустить эту книгу?", isPresented: $showReleaseConfirmation) {
             Button("Отпустить книгу") { store.releaseBook() }
             Button("Продолжить читать", role: .cancel) {}
@@ -49,10 +56,16 @@ private struct MacSurface: View {
                     .buttonStyle(.plain)
                     .accessibilityLabel("Переключить состояние соединения")
                 Spacer()
-                Text("Дальше").font(.system(.title3, design: .serif, weight: .semibold))
+                VStack(spacing: 1) {
+                    Text("Ещё пять").font(.system(.title3, design: .serif, weight: .semibold))
+                    Text("спокойный ритм чтения")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundStyle(AppPalette.muted)
+                }
                 Spacer()
                 Button("Экран Kindle") { showScreenShare = true }
                     .buttonStyle(.bordered)
+                    .controlSize(.large)
                 Text(Date.now, format: .dateTime.day().month(.wide).year()).font(.caption).foregroundStyle(.secondary)
             }
             .padding(.horizontal, 28)
@@ -65,7 +78,8 @@ private struct MacSurface: View {
                 StartView(book: book, monochrome: false, showReleaseConfirmation: $showReleaseConfirmation)
             }
         }
-        .background(Color(red: 0.98, green: 0.985, blue: 0.995))
+        .background(AppPalette.surface)
+        .foregroundStyle(AppPalette.ink)
         .clipShape(RoundedRectangle(cornerRadius: 18))
         .shadow(color: .black.opacity(0.12), radius: 24, y: 14)
     }
@@ -142,6 +156,9 @@ private struct KindleScreenShareView: View {
         }
         .padding(24)
         .frame(minWidth: 760, minHeight: 760)
+        .background(AppPalette.surface)
+        .foregroundStyle(AppPalette.ink)
+        .preferredColorScheme(.light)
         .onDisappear { screenShare.disconnect() }
     }
 }
@@ -156,7 +173,7 @@ private struct KindleSurface: View {
             HStack {
                 Image(systemName: "line.3.horizontal")
                 Spacer()
-                Text("Дальше").font(.system(.title3, design: .serif, weight: .semibold))
+                Text("Ещё пять").font(.system(.title3, design: .serif, weight: .semibold))
                 Spacer()
                 Text("6 сентября").font(.caption)
             }
@@ -256,7 +273,7 @@ private struct StartView: View {
             } else {
                 startButton
                     .buttonStyle(.borderedProminent)
-                    .tint(Color(red: 0.12, green: 0.34, blue: 0.85))
+                    .tint(AppPalette.accent)
             }
 
             Button("Отпустить книгу") { showReleaseConfirmation = true }
@@ -326,10 +343,12 @@ private struct SessionView: View {
                     .frame(maxWidth: 500)
                 Button("Закончить сеанс") { store.finishSession(note: closingNote) }
                     .buttonStyle(.borderedProminent)
+                    .tint(AppPalette.accent)
                     .controlSize(.large)
             } else {
                 Button("Следующая страница") { store.nextPage() }
                     .buttonStyle(.borderedProminent)
+                    .tint(AppPalette.accent)
                     .controlSize(.large)
             }
 
