@@ -7,13 +7,13 @@
     <key>CFBundleExecutable</key>
     <string>DalsheLiveMac</string>
     <key>CFBundleIdentifier</key>
-    <string>ru.dalshe.live</string>
+    <string>ru.eschepyat.reader</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>Дальше</string>
+    <string>Ещё пять</string>
     <key>CFBundleDisplayName</key>
-    <string>Дальше</string>
+    <string>Ещё пять</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -25,6 +25,6 @@
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSLocalNetworkUsageDescription</key>
-    <string>«Дальше» подключается напрямую к вашему Kindle для показа его экрана.</string>
+    <string>«Ещё пять» подключается напрямую к вашему Kindle для показа его экрана.</string>
 </dict>
 </plist>
