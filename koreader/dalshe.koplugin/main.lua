@@ -8,8 +8,19 @@ local Dalshe = WidgetContainer:extend({
     is_doc_only = false,
 })
 
+local direct_launch_flag = "/mnt/us/koreader/settings/eschepyat-direct-launch"
+
 function Dalshe:init()
     self.ui.menu:registerToMainMenu(self)
+
+    local flag = io.open(direct_launch_flag, "r")
+    if flag then
+        flag:close()
+        os.remove(direct_launch_flag)
+        UIManager:scheduleIn(1, function()
+            self:showStartScreen()
+        end)
+    end
 end
 
 function Dalshe:addToMainMenu(menu_items)
