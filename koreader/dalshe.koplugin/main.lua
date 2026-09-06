@@ -14,7 +14,7 @@ end
 
 function Dalshe:addToMainMenu(menu_items)
     menu_items.dalshe = {
-        text = _("Дальше"),
+        text = _("Ещё пять"),
         sorting_hint = "more_tools",
         callback = function()
             self:showStartScreen()
