@@ -129,7 +129,7 @@ export function App() {
           <>
             <header className="topbar">
               <button className="icon-button menu-button" aria-label="Открыть меню"><List size={22} /></button>
-              <strong>Дальше</strong>
+              <strong>Ещё пять</strong>
               <time>6 сентября 2026 г.</time>
             </header>
             <div className="mac-content">
@@ -155,7 +155,7 @@ export function App() {
       <aside className="kindle-surface" aria-label="Интерфейс Kindle Scribe">
         <header className="kindle-topbar">
           <List size={21} />
-          <strong>Дальше</strong>
+          <strong>Ещё пять</strong>
           <time>6 сентября</time>
         </header>
         <div className="kindle-content">
