@@ -11,7 +11,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 ## Product decisions
 
 - The product is named «Ещё пять».
-- «Ещё пять» существует только как нативное приложение macOS. Kindle сохраняет обычный интерфейс читалки и подключается к Mac только для просмотра экрана; отдельного приложения или плагина на Kindle быть не должно.
+- «Ещё пять» существует только как нативное приложение macOS. Kindle сохраняет обычный интерфейс читалки; отдельного плагина «Ещё пять» на Kindle быть не должно. Допускается сторонний KOAssistant внутри KOReader для вопросов по книге, связанный с локальным AI-шлюзом на Mac.
 - One active book only. Avoid streaks, badges, productivity dashboards, pressure, or guilt.
 - The selected visual direction is the third ideation concept: «Когда продолжим?», a tiny five-page commitment, a note to the future self, and a neutral «Отпустить книгу» action.
 - The macOS interface must stay high-contrast and readable in both system appearances; the app intentionally renders its calm light paper theme instead of inheriting dark-mode text colors.
