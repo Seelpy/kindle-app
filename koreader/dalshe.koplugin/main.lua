@@ -27,7 +27,6 @@ function Dalshe:showStartScreen()
     local book = title or _("Текущая книга")
     UIManager:show(InfoMessage:new({
         text = _("Когда продолжим?") .. "\n\n" .. book .. "\n\n" .. _("Только 5 страниц — можно остановиться раньше."),
-        timeout = 0,
     }))
 end
 
