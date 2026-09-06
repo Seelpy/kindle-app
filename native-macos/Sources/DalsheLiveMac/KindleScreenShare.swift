@@ -102,17 +102,30 @@ final class KindleScreenShareStore: ObservableObject {
         let output = Pipe()
         let errors = Pipe()
 
+        let sshDirectory = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent(".ssh", isDirectory: true)
+        let supportedKeys = ["id_ed25519", "id_ecdsa", "id_rsa"]
+        let identity = supportedKeys
+            .map { sshDirectory.appendingPathComponent($0) }
+            .first { FileManager.default.fileExists(atPath: $0.path) }
+
         process.executableURL = URL(fileURLWithPath: "/usr/bin/ssh")
-        process.arguments = [
+        var arguments = [
             "-p", String(port),
             "-o", "BatchMode=yes",
             "-o", "StrictHostKeyChecking=yes",
             "-o", "ConnectTimeout=5",
             "-o", "ServerAliveInterval=3",
-            "-o", "ServerAliveCountMax=1",
+            "-o", "ServerAliveCountMax=1"
+        ]
+        if let identity {
+            arguments += ["-o", "IdentitiesOnly=yes", "-i", identity.path]
+        }
+        arguments += [
             "root@\(host)",
             "dd if=/dev/fb0 bs=4642560 count=1 2>/dev/null"
         ]
+        process.arguments = arguments
         process.standardOutput = output
         process.standardError = errors
 
