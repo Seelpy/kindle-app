@@ -10,9 +10,11 @@ private enum AppPalette {
 
 struct ContentView: View {
     @EnvironmentObject private var store: ReadingStore
+    @EnvironmentObject private var aiProxy: AIProxyStore
     @StateObject private var screenShare = KindleScreenShareStore()
     @State private var showReleaseConfirmation = false
     @State private var showScreenShare = false
+    @State private var showAIStatus = false
     @State private var closingNote = "Начни с разговора у окна"
 
     var body: some View {
@@ -20,7 +22,7 @@ struct ContentView: View {
             AppPalette.canvas.ignoresSafeArea()
 
             if let book = store.state.book {
-                MacSurface(book: book, showReleaseConfirmation: $showReleaseConfirmation, showScreenShare: $showScreenShare, closingNote: $closingNote)
+                MacSurface(book: book, showReleaseConfirmation: $showReleaseConfirmation, showScreenShare: $showScreenShare, showAIStatus: $showAIStatus, closingNote: $closingNote)
                     .padding(24)
             } else {
                 EmptyBookView()
@@ -44,14 +46,20 @@ struct ContentView: View {
                     }
                 }
         }
+        .sheet(isPresented: $showAIStatus) {
+            AIStatusView()
+                .environmentObject(aiProxy)
+        }
     }
 }
 
 private struct MacSurface: View {
     @EnvironmentObject private var store: ReadingStore
+    @EnvironmentObject private var aiProxy: AIProxyStore
     let book: ActiveBook
     @Binding var showReleaseConfirmation: Bool
     @Binding var showScreenShare: Bool
+    @Binding var showAIStatus: Bool
     @Binding var closingNote: String
 
     var body: some View {
@@ -71,7 +79,12 @@ private struct MacSurface: View {
                 Button("Экран Kindle") { showScreenShare = true }
                     .buttonStyle(.bordered)
                     .controlSize(.large)
-                Text(Date.now, format: .dateTime.day().month(.wide).year()).font(.caption).foregroundStyle(.secondary)
+                Button { showAIStatus = true } label: {
+                    Label(aiProxy.status.title, systemImage: aiProxy.status.symbol)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+                .layoutPriority(1)
             }
             .padding(.horizontal, 28)
             .frame(height: 66)
@@ -87,6 +100,51 @@ private struct MacSurface: View {
         .foregroundStyle(AppPalette.ink)
         .clipShape(RoundedRectangle(cornerRadius: 18))
         .shadow(color: .black.opacity(0.12), radius: 24, y: 14)
+    }
+}
+
+private struct AIStatusView: View {
+    @EnvironmentObject private var aiProxy: AIProxyStore
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            HStack {
+                Text("AI-помощник для чтения")
+                    .font(.system(size: 30, design: .serif))
+                Spacer()
+                Button("Закрыть") { dismiss() }
+            }
+
+            Label(aiProxy.status.title, systemImage: aiProxy.status.symbol)
+                .font(.title3)
+
+            Text("KOAssistant работает внутри KOReader, а запросы передаёт через этот Mac. Книжный текст отправляется только после вашего разрешения в настройках приватности KOAssistant.")
+                .foregroundStyle(AppPalette.muted)
+                .fixedSize(horizontal: false, vertical: true)
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Адрес для Kindle").font(.caption).foregroundStyle(.secondary)
+                Text(aiProxy.endpoint + "/chat/completions")
+                    .font(.system(.body, design: .monospaced))
+                    .textSelection(.enabled)
+            }
+
+            HStack {
+                Button("Запустить и проверить") {
+                    Task { await aiProxy.startIfNeeded() }
+                }
+                .buttonStyle(.borderedProminent)
+                Button("Обновить статус") {
+                    Task { await aiProxy.refresh() }
+                }
+            }
+        }
+        .padding(28)
+        .frame(width: 620, height: 310)
+        .background(AppPalette.surface)
+        .foregroundStyle(AppPalette.ink)
+        .preferredColorScheme(.light)
     }
 }
 
