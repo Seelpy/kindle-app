@@ -4,7 +4,7 @@ set -eu
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 BUILD_ROOT="$SCRIPT_DIR/build"
 SWIFT_BUILD="$BUILD_ROOT/swift"
-APP_BUNDLE="$BUILD_ROOT/Дальше.app"
+APP_BUNDLE="$BUILD_ROOT/Ещё пять.app"
 SDK_PATH="/Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk"
 
 mkdir -p "$BUILD_ROOT/clang-cache" "$APP_BUNDLE/Contents/MacOS"
