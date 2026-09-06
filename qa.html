@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ещё пять — сравнение дизайна</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 24px; background: #17191d; color: white; font-family: -apple-system, sans-serif; }
+      h1 { margin: 0 0 20px; font-size: 18px; font-weight: 600; }
+      main { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      figure { margin: 0; min-width: 0; }
+      figcaption { margin-bottom: 9px; color: #b9bec8; font-size: 13px; }
+      .frame { width: 100%; aspect-ratio: 1440 / 1024; overflow: hidden; background: #e9ebef; }
+      img { width: 100%; height: 100%; object-fit: contain; display: block; }
+      .live { position: relative; }
+      iframe { position: absolute; inset: 0; width: 1440px; height: 1024px; border: 0; transform: scale(calc((100vw - 68px) / 2 / 1440)); transform-origin: top left; }
+    </style>
+  </head>
+  <body>
+    <h1>Визуальное сравнение · 1440 × 1024</h1>
+    <main>
+      <figure>
+        <figcaption>Выбранный макет</figcaption>
+        <div class="frame"><img src="/reference-selected.png" alt="Выбранный макет Ещё пять" /></div>
+      </figure>
+      <figure>
+        <figcaption>Работающий прототип</figcaption>
+        <div class="frame live"><iframe src="/" title="Работающий прототип Ещё пять"></iframe></div>
+      </figure>
+    </main>
+  </body>
+</html>
