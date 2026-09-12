@@ -32,6 +32,10 @@ KOAssistant на Kindle → Wi-Fi → CLIProxyAPI на Mac → выбранны�
 
 В интерфейсе «Ещё пять» кнопка статуса AI позволяет запустить шлюз и проверить, появились ли доступные модели. Если показано «Нужен вход в AI», нужно один раз завершить OAuth-вход CLIProxyAPI на Mac.
 
+### Рефлексия в KOReader
+
+Файл `kindle/koassistant-reflection-actions.lua` добавляет в общий чат KOAssistant четыре русскоязычных сценария: пятиминутную рефлексию, разбор ситуации, итог дня и спокойное обдумывание решения. На Kindle файл устанавливается как `/mnt/us/koreader/plugins/koassistant.koplugin/custom_actions.lua`. Ответы автоматически остаются в истории чатов KOAssistant.
+
 ## Просмотр экрана Kindle
 
 Кнопка «Начать 5 страниц» сразу открывает нативный просмотр framebuffer Kindle Scribe. Реализация основана на идее `kindle-scribe-screen-sharing`, но не требует Node.js или FFmpeg и не отключает проверку SSH-ключей.
